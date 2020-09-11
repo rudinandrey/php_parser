@@ -76,6 +76,18 @@ foreach($links as $link) {
             // echo $img->src.PHP_EOL;
         }
 
+        // обработка ссылок в новости, добавлять домен к ссылке, если ссылка не полная.
+        // так же добавляет аттрибут target="_blank"
+        
+
+        $hrefs = $content->find("a");
+        foreach($hrefs as $a) {
+            if(preg_match("/^\/.*/", $a->href)) {
+                $a->href=$domain.$a->href;
+                $a->target="_blank";
+            }
+        }
+
         $one["body"] = $content->innertext . PHP_EOL;
 
         $allNews[] = $one;
@@ -94,7 +106,7 @@ $cnt = 0;
 
 foreach($allReverseNews as $n) {
     $result = post($n);
-    $data = json_decode($result);
+    $data = json_decode($result, true);
     $c = $data["result"]["cnt"];
     $cnt += $c;
 }
